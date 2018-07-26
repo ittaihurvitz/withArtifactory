@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+    stages {
+        stage('build') {
+            steps {
+                sh 'sudo docker build -t simple-container-jenkins3 .'
+            }
+        }
+        stage('test') {
+            steps {
+                sh 'whoami'
+            }
+        }
+        stage('deploy') {
+            steps {
+                sh 'echo deploy stage'
+				//sh 'sudo docker run -d -p 80:80 ittaihurvitz/simple-container-ittai:1.0'
+				sh 'sudo docker run -d -p 80:80 simple-container-jenkins3'
+            }
+        }
+    }
+}
