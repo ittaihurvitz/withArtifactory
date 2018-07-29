@@ -11,7 +11,8 @@ pipeline {
     				def downloadSpec = """{
     					"files": [
     						{
-    						  "pattern": "libs-release-local/zipFiles/*.txt"
+    						  "pattern": "libs-release-local/zipFiles/*.txt",
+    						  "target": "./testing/"
     						}
     					]
     				}"""
