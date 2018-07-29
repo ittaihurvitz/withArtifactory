@@ -1,3 +1,6 @@
+import groovy.json.JsonOutput;
+import groovy.json.JsonSlurper;
+
 pipeline {
     agent any
     stages {
@@ -5,17 +8,37 @@ pipeline {
             steps {
                 sh 'echo build stage'
                 script{
-                    //sh 'sudo docker build -t simple-container-jenkins3 .'
-    				println "test groovy"
+                    
+                    def defaultDownloadSpec =  """{
+    					"files": [
+    						{
+    						  "pattern": "libs-release-local/zipFiles/*.txt",
+    						  "target": "./testing2/"
+    						}
+    					]
+    				}"""
+    				println defaultDownloadSpec
+    				
+    				//def jsonSlurper = new JsonSlurper()
+    				//def object = jsonSlurper.parseText(defaultDownloadSpec)
+    				//println object.files
+    				
+                    def currentFolder = "testing2"
+    				println "test groovy. currentFolder = " + currentFolder
+    				
     				def server = Artifactory.newServer url: 'https://ittai.jfrog.io/ittai/', username: 'admin', password: '4LmWr0KWRT'
+    				
     				def downloadSpec = """{
     					"files": [
     						{
     						  "pattern": "libs-release-local/zipFiles/*.txt",
-    						  "target": "./testing/"
+    						  "target": "./testing2/"
     						}
     					]
     				}"""
+    				
+    				//def downloadSpec = JsonOutput.toJson(object)
+    				
     				server.download(downloadSpec)
                 }
             }
