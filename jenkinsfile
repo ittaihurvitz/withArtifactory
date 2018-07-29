@@ -7,17 +7,15 @@ pipeline {
                 script{
                     //sh 'sudo docker build -t simple-container-jenkins3 .'
     				println "test groovy"
-    				//sh 'echo build stage'
-    				//def server = Artifactory.newServer url: 'https://ittai.jfrog.io/ittai/', username: 'admin', password: '4LmWr0KWRT'
-    				//def downloadSpec = """{
-    				//	"files": [
-    				//		{
-    				//		  "pattern": "libs-release-local/zipFiles/*.txt",
-    				//		  "target": "C:\\temp\\artifactory\\fromJenkins"
-    				//		}
-    				//	]
-    				//}"""
-    				//server.download(downloadSpec)
+    				def server = Artifactory.newServer url: 'https://ittai.jfrog.io/ittai/', username: 'admin', password: '4LmWr0KWRT'
+    				def downloadSpec = """{
+    					"files": [
+    						{
+    						  "pattern": "libs-release-local/zipFiles/*.txt"
+    						}
+    					]
+    				}"""
+    				server.download(downloadSpec)
                 }
             }
         }
