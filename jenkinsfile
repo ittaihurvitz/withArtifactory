@@ -7,6 +7,8 @@ pipeline {
         stage('build') {
             steps {
                 sh 'echo build stage'
+                sh 'python testPython.py'
+                sh 'cat data_file2.json'
                 script{
                     
                     def defaultDownloadSpec =  """{
@@ -20,8 +22,17 @@ pipeline {
     				println defaultDownloadSpec
     				
     				//def jsonSlurper = new JsonSlurper()
-    				//def object = jsonSlurper.parseText(defaultDownloadSpec)
+    				//def object = JsonSlurper.parseText(defaultDownloadSpec)
     				//println object.files
+    				
+    				//def object = JsonSlurper.parseText '''
+                    //    { "simple": 123,
+                    //    "fraction": 123.66,
+                    //    "exponential": 123e12
+                    //    }'''
+                    
+                    //String fileContents = new File('data_file2.json').text
+                    //println "Read from file = " + fileContents
     				
                     def currentFolder = "testing2"
     				println "test groovy. currentFolder = " + currentFolder
