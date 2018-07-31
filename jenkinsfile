@@ -1,7 +1,14 @@
 import groovy.json.JsonOutput;
 import groovy.json.JsonSlurper;
 
+// Define parameters
+def path1
+def pathe2
+
 pipeline {
+    environment {
+        FOO = "BAR"
+    }
     agent any
     stages {
         stage('build') {
@@ -9,8 +16,20 @@ pipeline {
                 sh 'echo build stage'
                 sh 'python testPython.py'
                 sh 'cat data_file2.json'
+                sh 'echo "FOO before script is $FOO"'
+                //${env.FOO} = "barbar"
+                script {
+                    //${env.FOO} = "barbar"
+                    path1 = "aaa"
+                    println "path1 = " + path1
+                    path2 = readFile 'data_file2.json'
+                    println "path2 = " + path2
+                    println "env foo inside script = " + env.FOO
+                }
+                echo "ECO not in sh and after script = ${env.FOO}"
+                sh 'echo inside sh "FOO is $FOO"'
                 script{
-                    
+                    println "path1 in next script = " + path1
                     def defaultDownloadSpec =  """{
     					"files": [
     						{
