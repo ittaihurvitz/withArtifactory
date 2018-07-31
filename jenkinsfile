@@ -2,73 +2,35 @@ import groovy.json.JsonOutput;
 import groovy.json.JsonSlurper;
 
 // Define parameters
-def path1
-def pathe2
+def downloadSpec
+def uploadSpec
 
 pipeline {
     environment {
-        FOO = "BAR"
+        MODE = "playground"
     }
     agent any
     stages {
         stage('build') {
             steps {
-                sh 'echo build stage'
-                sh 'python testPython.py'
-                sh 'cat data_file2.json'
-                sh 'echo "FOO before script is $FOO"'
-                //${env.FOO} = "barbar"
+                echo "build stage"
                 script {
-                    //${env.FOO} = "barbar"
-                    path1 = "aaa"
-                    println "path1 = " + path1
-                    path2 = readFile 'data_file2.json'
-                    println "path2 = " + path2
-                    println "env foo inside script = " + env.FOO
+                    println "Just for checking - print environment variable:"
+                    println "env MODE inside script = " + env.MODE
                 }
-                echo "ECO not in sh and after script = ${env.FOO}"
-                sh 'echo inside sh "FOO is $FOO"'
-                script{
-                    println "path1 in next script = " + path1
-                    def defaultDownloadSpec =  """{
-    					"files": [
-    						{
-    						  "pattern": "libs-release-local/zipFiles/*.txt",
-    						  "target": "./testing2/"
-    						}
-    					]
-    				}"""
-    				println defaultDownloadSpec
-    				
-    				//def jsonSlurper = new JsonSlurper()
-    				//def object = JsonSlurper.parseText(defaultDownloadSpec)
-    				//println object.files
-    				
-    				//def object = JsonSlurper.parseText '''
-                    //    { "simple": 123,
-                    //    "fraction": 123.66,
-                    //    "exponential": 123e12
-                    //    }'''
-                    
-                    //String fileContents = new File('data_file2.json').text
-                    //println "Read from file = " + fileContents
-    				
-                    def currentFolder = "testing2"
-    				println "test groovy. currentFolder = " + currentFolder
-    				
+                echo "env MODE outside script = ${env.MODE}"
+                sh 'echo inside sh "MODE is $MODE"'
+                echo "env MODE outside script = $MODE"
+                
+                echo "running python script that builds the data file:"
+                sh 'python testPython.py'
+                echo "checking the result:"
+                sh 'cat data_file2.json'
+                script {
+                    echo "running artifactory actions:"
+                    downloadSpec = readFile 'data_file2.json'
+                    println "downloadSpec = " + downloadSpec
     				def server = Artifactory.newServer url: 'https://ittai.jfrog.io/ittai/', username: 'admin', password: '4LmWr0KWRT'
-    				
-    				def downloadSpec = """{
-    					"files": [
-    						{
-    						  "pattern": "libs-release-local/zipFiles/*.txt",
-    						  "target": "./testing2/"
-    						}
-    					]
-    				}"""
-    				
-    				//def downloadSpec = JsonOutput.toJson(object)
-    				
     				server.download(downloadSpec)
                 }
             }
